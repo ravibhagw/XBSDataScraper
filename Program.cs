@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using XBS.Core;
+using XBS.Core.Parser;
 
 namespace XBSDataScraper
 {
@@ -40,8 +41,20 @@ namespace XBSDataScraper
                 seasonStatsToPull: new int[] { 30 }
                 );
 
-            parser.Parse();
+            var players = parser.GetPlayers();
+            var statsTeams = parser.GetTeams();
 
+            using (FileStream file = new FileStream("c:\\testoutputdraft\\teams_stats.xml", FileMode.Create, FileAccess.Write))
+            {
+                System.Xml.Serialization.XmlSerializer ser = new System.Xml.Serialization.XmlSerializer(typeof(List<StatsTeam>));
+                ser.Serialize(file, statsTeams);
+            }
+
+            using (FileStream file = new FileStream("c:\\testoutputdraft\\players_staging.xml", FileMode.Create, FileAccess.Write))
+            {
+                System.Xml.Serialization.XmlSerializer ser = new System.Xml.Serialization.XmlSerializer(typeof(List<Player>));
+                ser.Serialize(file, players);
+            }
         }
 
 
